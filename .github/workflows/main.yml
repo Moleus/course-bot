@@ -43,7 +43,7 @@ jobs:
       - uses: DeLaGuardo/clojure-lint-action@master
         with:
           clj-kondo-args: --lint src test --config deps.edn
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: cljfmt check
         run: clojure -M:fmt
