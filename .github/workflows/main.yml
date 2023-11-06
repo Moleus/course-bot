@@ -40,8 +40,10 @@ jobs:
             ~/.deps.clj
           key: project-dependencies-${{ hashFiles('deps.edn') }}
 
-      - name: clj-kondo lint
-        run: clojure -M:lint
+      - uses: DeLaGuardo/clojure-lint-action@master
+        with:
+          clj-kondo-args: --lint src test --config deps.edn
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: cljfmt check
         run: clojure -M:fmt
