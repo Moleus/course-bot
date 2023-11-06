@@ -4,6 +4,7 @@ on:
   push:
   pull_request:
 
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -29,10 +30,21 @@ jobs:
         uses: DeLaGuardo/setup-clojure@12.1
         with:
           cli: 1.11.1.1155
-          
-      - name: clj-kondo lint
-        run: clojure -M:lint
-          
+
+      - name: Cache clojure dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.deps.clj
+          key: project-dependencies-${{ hashFiles('deps.edn') }}
+
+      - uses: DeLaGuardo/clojure-lint-action@master
+        with:
+          clj-kondo-args: --lint src test --config deps.edn
+          # github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: cljfmt check
         run: clojure -M:fmt
 
@@ -61,4 +73,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-       
+
